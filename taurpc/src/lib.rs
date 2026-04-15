@@ -294,14 +294,15 @@ impl<R: Runtime> Router<R> {
         // Only export in development mode and export_path not none
         if tauri::is_dev() {
             if let Some(export_path) = self.export_path {
-                export_types(
+                if let Err(e) = export_types(
                     export_path,
                     self.args_map_json.clone(),
                     self.export_config.clone(),
                     self.fns_map.clone(),
                     self.types.clone(),
-                )
-                .unwrap();
+                ) {
+                    eprintln!("Failed to export bindings: {}", e);
+                }
             }
         }
 
